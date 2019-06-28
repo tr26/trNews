@@ -3,4 +3,11 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#103C70</color>
     <color name="colorAccent">#D81B60</color>
+
+    <array name="colorPagesViewPager">
+        <item>#ADCEFF</item>
+        <item>#F7CF8B</item>
+        <item>#FD96A2</item>
+    </array>
+
 </resources>
