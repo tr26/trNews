@@ -1,5 +1,7 @@
 package com.example.trnews.Model;
 
+import android.provider.MediaStore;
+
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -31,12 +33,22 @@ public class Result {
     @Expose
     private Double id;
 
+    @SerializedName("adx_keywords")
+    @Expose
+    private String adxKeywords;
 
+    @SerializedName("media")
+    @Expose
+    private List<Medium> media;
 
 
     @SerializedName("uri")
     @Expose
     private String uri;
+
+    public List<Medium> getMedia() { return media; }
+    public void setMedia(List<Medium> media) { this.media = media; }
+
 
     public String getUrl() {
         return url;
@@ -46,7 +58,13 @@ public class Result {
         this.url = url;
     }
 
+    public String getAdxKeywords() {
+        return adxKeywords;
+    }
 
+    public void setAdxKeywords(String adxKeywords) {
+        this.adxKeywords = adxKeywords;
+    }
 
 
     public String getSection() {

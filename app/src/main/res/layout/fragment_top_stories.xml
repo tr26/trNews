@@ -1,17 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".Fragments.TopStoriesFragment">
-
-    <!-- TODO: Update blank fragment layout -->
+<RelativeLayout
+    xmlns:android1="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android1:layout_width="match_parent"
+    android1:layout_height="match_parent">
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="top stories fragment"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:layout_gravity="center"
-        android:gravity="center"/>
+        android1:id="@+id/totoBis"
+        android1:layout_width="match_parent"
+        android1:layout_height="match_parent"
+        tools:ignore="InvalidId"/>
 
-</FrameLayout>
+    <android.support.v7.widget.RecyclerView
+        android1:id="@+id/recyclerViewTopStoriesArticles"
+        android1:layout_width="match_parent"
+        android1:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>

@@ -3,29 +3,32 @@ package com.example.trnews.Views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.example.trnews.Model.Result;
+
 import com.example.trnews.Activities.WebActivity;
+import com.example.trnews.Model.Multimedia;
+import com.example.trnews.Model.ResultsTS;
 import com.example.trnews.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
 
-public class ArticlesMostPopularViewHolder  extends RecyclerView.ViewHolder {
-
-    private final Context context;
-
+class ArticlesTopStoriesHolder extends RecyclerView.ViewHolder {
     Activity mMainActivity;
     LinearLayout mLinearLayout;
     TextView mTextViewTitle;
     TextView mTextViewDate;
     TextView mTextViewContentArticle;
+    Context context;
     ImageView mImageView;
 
-    public ArticlesMostPopularViewHolder(View itemView) {
+    public ArticlesTopStoriesHolder(@NonNull View itemView) {
         super(itemView);
 
         context = itemView.getContext();
@@ -37,30 +40,33 @@ public class ArticlesMostPopularViewHolder  extends RecyclerView.ViewHolder {
     }
 
 
-    public void updateWithArticlesMostPopular(final Result articleMostPopular){
+    public void updateWithArticlesMostPopular(final ResultsTS articleTopStories){
 
-        //this.mTextView.setText(articleMostPopular.getTitle());
         mLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToWebsite(articleMostPopular.getUrl());
+                goToWebsite(articleTopStories.getUrl());
             }
         });
-        this.mTextViewDate.setText(articleMostPopular.getPublishedDate());
-        this.mTextViewTitle.setText(articleMostPopular.getTitle().toUpperCase());
-        this.mTextViewContentArticle.setText(articleMostPopular.getSection());
-        if (!articleMostPopular.getMedia().isEmpty()){
-            showImage(articleMostPopular);
-            //articleMostPopular.getMedia().get(0).getMediaMetadata().get(0).getUrl();
+        this.mTextViewDate.setText(articleTopStories.getPublishedDate().substring(0,10));
+        this.mTextViewTitle.setText(articleTopStories.getTitle().toUpperCase());
+        this.mTextViewContentArticle.setText(articleTopStories.getSection());
+
+        if (articleTopStories.getMultimedia() != null){
+            showImage(articleTopStories);
+
 
         }
 
-
     }
 
-    private void showImage(Result articleMostPopular) {
-        String url = articleMostPopular.getMedia().get(0).getMediaMetadata().get(0).getUrl();
-        Picasso.with(this.context).load(url).into(mImageView);
+    private void showImage(ResultsTS articlesTopStories) {
+        if (articlesTopStories.getMultimedia().size() == 0){
+            Log.e("eee", "toto");
+        } else {
+            String url = articlesTopStories.getMultimedia().get(0).getUrl();
+            Picasso.with(this.context).load(url).into(mImageView);
+        }
     }
 
     private void goToWebsite(String url){

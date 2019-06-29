@@ -1,9 +1,7 @@
 package com.example.trnews.Fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,12 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
-import com.example.trnews.Activities.MainActivity;
-import com.example.trnews.Activities.WebActivity;
 import com.example.trnews.Model.ArticlesMostPopular;
 import com.example.trnews.Model.Result;
 import com.example.trnews.R;
@@ -27,15 +22,12 @@ import com.example.trnews.Views.ArticlesMosPopularAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.Disposable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -96,7 +88,7 @@ public class MostPopularFragment extends Fragment{
         this.mDisposable = NytimesStreams.streamFetchResults(API_KEY).
 
     }*/
-        private void HttpRequest(){
+    private void HttpRequest(){
         NYTimesDataService nyTimesDataService = RetrofitInstance.getRetrofitInstance().create(NYTimesDataService.class);
         Call<ArticlesMostPopular> call = nyTimesDataService.getMostPopularArticle(API_KEY);
 
@@ -109,8 +101,6 @@ public class MostPopularFragment extends Fragment{
 
 
                 mResults = new ArrayList<>();
-
-
 
                 for (Result articlesMostPopular : articlesMostPopularsList) {
                     mResults.add(articlesMostPopular);
