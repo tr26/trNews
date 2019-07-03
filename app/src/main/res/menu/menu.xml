@@ -2,19 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="Share"
-        android:id="@+id/share" />
+        android:title="Notifications"
+        android:id="@+id/share"
+        android:onClick="goToNotificationsActivity"/>
     <item
         android:title="About"
         android:id="@+id/about" />
     <item
-        android:title="Exit"
+        android:title="Help"
         android:id="@+id/exit" />
     <item
         android:title="Search"
         android:id="@+id/search"
         android:icon="@drawable/ic_search_24dp"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:onClick="goToSearchActivity"/>
 
 
 </menu>

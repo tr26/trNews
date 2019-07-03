@@ -15,6 +15,8 @@ import com.example.trnews.R;
 public class ChooseTopicFragment extends Fragment {
 
 
+    public static final String choosenTopics="choosenTopic";
+
     public ChooseTopicFragment() {
         // Required empty public constructor
     }

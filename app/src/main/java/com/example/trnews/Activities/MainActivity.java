@@ -1,5 +1,7 @@
 package com.example.trnews.Activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -10,10 +12,15 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.example.trnews.Activities.SearchActivity;
 
 import com.example.trnews.Adapters.PageAdapter;
 import com.example.trnews.R;
@@ -27,25 +34,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView mNavigationView;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
-
+    private Button mSearchBtn;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = this.getBaseContext();
 
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-
+        this.mSearchBtn = (Button) findViewById(R.id.search) ;
         this.configureToolbar();
         this.configureNavigationView();
         this.configureDrawerLayout();
         this.configureViewPagerAndTabLayout();
+
+        /*mSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, SearchActivity.class);
+                //intent.putExtra("url", url);
+                mContext.startActivity(intent);
+            }
+        });*/
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+
         return true;
     }
 
@@ -79,19 +99,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        int id = menuItem.getItemId();
-
-        switch (id){
-            case R.id.activity_main_drawer_news:
-                break;
-            case R.id.activity_main_drawer_profil:
-                break;
-            case R.id.activity_main_drawer_settings:
-                break;
+    public boolean onNavigationItemSelected(@NonNull MenuItem menu) {
+        switch (menu.getItemId()){
+            case R.id.search:
+                Log.e("test", "test");
+                return true;
+                default:
+                    return super.onOptionsItemSelected(menu);
         }
-        this.mDrawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     @Override
@@ -101,5 +116,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void goToSearchActivity(MenuItem item){
+
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra( "title",  "searchActivity" );
+
+        startActivity(intent);
+    }
+
+    public void goToNotificationsActivity(MenuItem item){
+
+        Intent intent = new Intent(this, SearchActivity.class);
+
+        intent.putExtra( "title",  "notificationsActivity" );
+        startActivity(intent);
     }
 }
