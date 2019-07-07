@@ -11,12 +11,10 @@
         android:id="@+id/titleSearchActivity"
         android:layout_width="match_parent"
         android:layout_height="95dp"
-        android:orientation="horizontal"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp"
         android:background="@color/colorPrimaryDark"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/imageButton"
@@ -36,25 +34,25 @@
             android:gravity="center_vertical"
             android:paddingLeft="50dp"
             android:text="Search Articles"
+            android:textColor="#fff"
             android:textSize="36sp"
-            android:textStyle="bold"
-            android:textColor="#fff"/>
+            android:textStyle="bold"/>
     </LinearLayout>
 
     <EditText
         android:id="@+id/editTextSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="17dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="17dp"
         android:backgroundTint="#254B75"
         android:ems="10"
         android:hint="Search Query Term"
         android:inputType="textPersonName"
-        android:paddingLeft="20dp"
 
+        android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:textColorHighlight="#254B75"
         android:textColorLink="#244B75"
@@ -82,7 +80,9 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="Begin Date"/>
 
         <TextView
@@ -90,6 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="End Date"/>
     </LinearLayout>
 
@@ -99,6 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="60dp"
         android:orientation="horizontal"
         android:paddingLeft="25dp"
@@ -109,29 +111,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
-        <EditText
+        <TextView
             android:id="@+id/editText5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:ems="10"
-            android:inputType="date"
-            android:textColorHighlight="#21466C"
-            android:textColorLink="#21466C"
-            android:textColor="#21466C"
             android:backgroundTint="#21466C"
-            android:textCursorDrawable="@null"/>
+            android:clickable="false"
 
-        <EditText
+            android:ems="10"
+            android:foregroundGravity="center"
+            android:gravity="clip_horizontal|center_horizontal|center_vertical"
+            android:hint="DD/MM/YYYY"
+            android:shadowColor="#002B2929"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:textColor="#21466C"
+            android:textColorHighlight="#21466C"
+            android:textColorLink="#21466C"/>
+
+        <TextView
             android:id="@+id/editText4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:textColor="#21466C"
             android:backgroundTint="#21466C"
-            android:textCursorDrawable="@null"
-            android:inputType="date"/>
+            android:ems="10"
+            android:gravity="center"
+            android:hint="AA/AA/AAAA"
+
+            android:textColor="#21466C"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -149,7 +160,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <CheckBox
                 android:id="@+id/checkBox"
@@ -158,21 +170,24 @@
                 android:text="Arts"
                 android:buttonTint="#21466C"
                 android:backgroundTint="#21466C"
-                android:textColorLink="#21466C"/>
+                android:textColorLink="#21466C"
+                android:onClick="onCheckboxClicked"/>
 
             <CheckBox
                 android:id="@+id/checkBox2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:buttonTint="#21466C"
-                android:text="Business"/>
+                android:text="Business"
+                android:onClick="onCheckboxClicked"/>
 
             <CheckBox
                 android:id="@+id/checkBox3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:buttonTint="#21466C"
-                android:text="Entrepreneurs"/>
+                android:text="Entrepreneurs"
+                android:onClick="onCheckboxClicked"/>
         </LinearLayout>
 
         <LinearLayout
@@ -186,21 +201,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:buttonTint="#21466C"
-                android:text="Politics"/>
+                android:text="Politics"
+                android:onClick="onCheckboxClicked"/>
 
             <CheckBox
                 android:id="@+id/checkBox5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:buttonTint="#21466C"
-                android:text="Sports"/>
+                android:text="Sports"
+                android:onClick="onCheckboxClicked"/>
 
             <CheckBox
                 android:id="@+id/checkBox6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:buttonTint="#21466C"
-                android:text="Travel"/>
+                android:text="Travel"
+                android:onClick="onCheckboxClicked"/>
         </LinearLayout>
     </LinearLayout>
 

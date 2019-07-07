@@ -1,6 +1,8 @@
 package com.example.trnews.Utils;
 
 import com.example.trnews.Model.ArticlesMostPopular;
+import com.example.trnews.Model.ArticlesResultsResearch;
+import com.example.trnews.Model.ArticlesSports;
 import com.example.trnews.Model.ArticlesTopStories;
 
 import retrofit2.Call;
@@ -21,10 +23,17 @@ public interface NYTimesDataService {
     @GET("topstories/v2/{section}")
     Call<ArticlesTopStories> getTopStoriesArticles(@Path("section") String section, @Query("api-key") String key);
 
-    /*public interface GithubService {
-        @GET("users/{username}/following")
-        Call<List<GithubUser>> getFollowing(@Path("username") String username);
-    }*/
+    @GET("search/v2/articlesearch.json")
+    Call<ArticlesResultsResearch> getResearchArticles(
+            @Query("fq") String filteredQuery,
+            @Query("begin_date") String dateBegin,
+            @Query("end_date") String dateEnd,
+            @Query("api-key") String key);
+
+    @GET("topstories/v2/sports.json")
+    Call<ArticlesSports> getSportsArticles(@Query("api-key") String key);
+
+
 
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://api.nytimes.com/svc/")

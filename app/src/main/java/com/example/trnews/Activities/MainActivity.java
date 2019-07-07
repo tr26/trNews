@@ -25,15 +25,24 @@ import com.example.trnews.Activities.SearchActivity;
 import com.example.trnews.Adapters.PageAdapter;
 import com.example.trnews.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String API_KEY = "QAevoCdrGFGgi7mRDu8GBOME5RLn3veP";
 
-    private Toolbar mToolbar;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mNavigationView;
-    private ViewPager mViewPager;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.activity_main_navigation_drawer)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.activity_main_navView)
+    NavigationView mNavigationView;
+    @BindView(R.id.viewPagerActivityMain)
+    ViewPager mViewPager;
+
     private TabLayout mTabLayout;
+
     private Button mSearchBtn;
     private Context mContext;
 
@@ -44,22 +53,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         mContext = this.getBaseContext();
 
-        Toolbar mToolbar = findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        this.mSearchBtn = (Button) findViewById(R.id.search) ;
-        this.configureToolbar();
+
         this.configureNavigationView();
+        this.mSearchBtn = (Button) findViewById(R.id.search) ;
         this.configureDrawerLayout();
         this.configureViewPagerAndTabLayout();
 
-        /*mSearchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, SearchActivity.class);
-                //intent.putExtra("url", url);
-                mContext.startActivity(intent);
-            }
-        });*/
     }
 
     @Override
@@ -71,30 +72,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //CONFIGURATION DE NOTRE INTERFACE
 
-    //1-TOOLBAR
-    private void configureToolbar(){
-        this.mToolbar = (Toolbar) findViewById(R.id.toolbar);
-    }
+
     //2-DrawerLayout
     private void configureDrawerLayout(){
-        this.mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_main_navigation_drawer);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.syncState();
     }
 
     //3-Configure NavigationView
     private void configureNavigationView(){
-        this.mNavigationView = (NavigationView) findViewById(R.id.activity_main_navView);
         mNavigationView.setNavigationItemSelectedListener(this);
+
     }
 
     //4-Configure ViewPager et TabLayout
     private void configureViewPagerAndTabLayout(){
-        ViewPager pager = (ViewPager)findViewById(R.id.viewPagerActivityMain);
-        pager.setAdapter(new PageAdapter(getSupportFragmentManager(), getResources().getIntArray(R.array.colorPagesViewPager)));
+        ViewPager mViewPager = (ViewPager)findViewById(R.id.viewPagerActivityMain);
+        mViewPager.setAdapter(new PageAdapter(getSupportFragmentManager(), getResources().getIntArray(R.array.colorPagesViewPager)));
 
         TabLayout tab = (TabLayout)findViewById(R.id.tabMainActivity);//tabLayout getted
-        tab.setupWithViewPager(pager);//linked to ViewPager
+        tab.setupWithViewPager(mViewPager);//linked to ViewPager
         tab.setTabMode(TabLayout.MODE_FIXED);//Same size for all buttons
     }
 
