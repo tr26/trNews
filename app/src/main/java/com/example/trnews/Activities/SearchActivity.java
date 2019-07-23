@@ -1,6 +1,10 @@
 package com.example.trnews.Activities;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,11 +13,15 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,7 +30,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.trnews.Model.ArticlesMostPopular;
+import com.example.trnews.Model.ArticlesResultsResearch;
+import com.example.trnews.Model.Doc;
+import com.example.trnews.Model.MyBroadcastReceiver;
 import com.example.trnews.R;
+import com.example.trnews.Utils.NYTimesDataService;
+import com.example.trnews.Utils.RetrofitInstance;
+import com.example.trnews.Views.ResultatsAdapter;
 
 import java.lang.reflect.Array;
 import java.text.DateFormat;
@@ -35,8 +50,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class SearchActivity extends AppCompatActivity {
+
+    public static final String API_KEY = "QAevoCdrGFGgi7mRDu8GBOME5RLn3veP";
+
 
     @BindView(R.id.imageButton)
     ImageButton mImageButton;
@@ -82,6 +102,9 @@ public class SearchActivity extends AppCompatActivity {
 
     DatePickerDialog mDatePickerDialog;
 
+    SharedPreferences sharedPreferences;
+    private static final String CATEGORIES_CHECKED = "CATEGORIES_CHECKED";
+
 
 
 
@@ -91,7 +114,6 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         mContext = this.getBaseContext();
         Intent intent = getIntent();
-        Log.d("toto", intent.getStringExtra("title").toString());
         ButterKnife.bind(this);
         mSearchBtn.setEnabled(false);
         mSearchBtn.setBackgroundColor(Color.parseColor("#326F88"));
@@ -124,26 +146,38 @@ public class SearchActivity extends AppCompatActivity {
 
                     String text = mEditTextSearch.getText().toString();
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                    try {
-                        Date date1 = sdf.parse(dateBegin);
-                        Date date2 = sdf.parse(dateEnd);
+                    if (dateBegin != "" || dateEnd != ""){
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                        try {
+                            Date date1 = sdf.parse(dateBegin);
+                            Date date2 = sdf.parse(dateEnd);
 
-                        if (areDateValide(date1, date2)) {
+                            if (areDateValide(date1, date2)) {
 
-                            Intent intent = new Intent(view.getContext(), ResultActivity.class);
-                            intent.putExtra("dateBegin", dateBegin);
-                            intent.putExtra("dateEnd", dateEnd);
-                            intent.putExtra("categories", tttttt);
-                            intent.putExtra("queryWords", text);
+                                Intent intent = new Intent(view.getContext(), ResultActivity.class);
+                                intent.putExtra("dateBegin", dateBegin);
+                                intent.putExtra("dateEnd", dateEnd);
+                                intent.putExtra("categories", tttttt);
+                                intent.putExtra("queryWords", text);
 
-                            mContext.startActivity(intent);
-                        } else {
-                            Toast.makeText(SearchActivity.this, "Les dates que vous venez de rentrer ne sont pas valides", Toast.LENGTH_SHORT);
+                                mContext.startActivity(intent);
+                            } else {
+                                Toast.makeText(SearchActivity.this, "Les dates que vous venez de rentrer ne sont pas valides", Toast.LENGTH_SHORT);
+                            }
+                        } catch (ParseException ex) {
+                            Log.v("Exception", ex.getLocalizedMessage());
                         }
-                    } catch (ParseException ex) {
-                        Log.v("Exception", ex.getLocalizedMessage());
+                    } else {
+                        Intent intent = new Intent(view.getContext(), ResultActivity.class);
+                        intent.putExtra("dateBegin", "");
+                        intent.putExtra("dateEnd", "");
+                        intent.putExtra("categories", tttttt);
+                        intent.putExtra("queryWords", text);
+
+                        mContext.startActivity(intent);
                     }
+
+
                 }
             }
         });
@@ -179,6 +213,7 @@ public class SearchActivity extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
+
         mEditTextDateTwo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -209,9 +244,97 @@ public class SearchActivity extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
+
+        mSwitchBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+                Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, 0);
+
+                if (b){
+                    //Récuperer les donnés pour requetes
+                    //démarrer Notification via AlarmManager
+
+                    sharedPreferences  = getSharedPreferences(CATEGORIES_CHECKED, 0);
+                    sharedPreferences.edit().putString(CATEGORIES_CHECKED, tttttt).apply();
+
+                    //startAlarm(alarmManager, pendingIntent2);
+
+
+
+                    Toast.makeText(getApplicationContext(), "azertyuio", Toast.LENGTH_SHORT).show();
+
+
+
+                    //startAlarm(alarmManager, pendingIntent2);
+
+                    mTextViewTitle.setVisibility(View.INVISIBLE);
+
+                } else {
+                    //Supprimer Les notifications
+                    //sharedPreferences = getSharedPreferences(CATEGORIES_CHECKED, 0);
+                    if (sharedPreferences.contains(CATEGORIES_CHECKED)){
+                        sharedPreferences.edit().clear().apply();
+                    }
+                    mTextViewTitle.setVisibility(View.VISIBLE);
+                    cancelAlarm(alarmManager, pendingIntent2);
+                }
+
+                //sharedPreferences.getAll();
+            }
+        });
         adjustView();
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        final String[] firstId = new String[1];
+        if (mSwitchBtn.isChecked()){
+            sharedPreferences.edit().putString(CATEGORIES_CHECKED, tttttt).apply();
+
+            NYTimesDataService nyTimesDataService = RetrofitInstance.getRetrofitInstance().create(NYTimesDataService.class);
+            Call<ArticlesResultsResearch> call = nyTimesDataService.getFirstOfTheRequest(tttttt, API_KEY);
+
+            call.enqueue(new Callback<ArticlesResultsResearch>() {
+                @Override
+                public void onResponse(Call<ArticlesResultsResearch> call, retrofit2.Response<ArticlesResultsResearch> response) {
+                    //StringBuilder stringBuilder = new StringBuilder();
+                    List<Doc> articlesResearchList;
+                    articlesResearchList = response.body().getResponse().getDocs();
+
+
+                    //mResponseList = new ArrayList<Doc>();
+                    firstId[0] = articlesResearchList.get(0).getId();
+
+                    sharedPreferences.edit().putString("firstId", firstId[0]).apply();
+                    //NYTimesDataService.getFirstOfTheRequest(tttttt, API_KEY);
+                    sharedPreferences.getAll();
+
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+                    Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+                    PendingIntent pendingIntent2 = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, 0);
+
+                    startAlarm(alarmManager, pendingIntent2);
+                }
+
+                @Override
+                public void onFailure(Call<ArticlesResultsResearch> call, Throwable t) {
+
+                }
+            });
+
+
+
+        }
+
+    }
+
 
 
     private void adjustView(){
@@ -231,15 +354,16 @@ public class SearchActivity extends AppCompatActivity {
                 enableTextView.setVisibility(View.VISIBLE);
                 mSearchBtn.setVisibility(View.INVISIBLE);
                 mTextViewTitle.setText("Notifications");
+                mEditTextDateTwo.setVisibility(View.INVISIBLE);
+                mEditTextDateOne.setVisibility(View.INVISIBLE);
+                mTextViewDateOne.setVisibility(View.INVISIBLE);
+                mTextViewDateTwo.setVisibility(View.INVISIBLE);
                 break;
 
                 default:
         }
     }
 
-    private void makeVisibleAllComponents(){
-
-    }
 
     private boolean checkTheDifferentFields(){
         if (mEditTextSearch.getText().length() >0 && myarray.size()>0){
@@ -250,72 +374,31 @@ public class SearchActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCheckboxClicked(View view) {
-        //view.onTouchEvent(mEditTextSearch.clic)
-        boolean checked = ((CheckBox) view).isChecked();
-        if (myarray == null ){
-            myarray=new ArrayList<String>();
-            //
-            // String str="";
 
-        }
+        boolean checked = ((CheckBox) view).isChecked();
+        if (myarray == null ) { myarray=new ArrayList<String>(); }
         String str="";
+
         // Check which checkbox was clicked
         switch(view.getId()) {
             case R.id.checkBox:
-                if (checked){
-                    str = "Arts";
-                    myarray.add(str);
-                }
-                else {
-                    //str = "1 deselected";
-                    myarray.remove("Arts");
-                }
+                fillTheArray(myarray, mCheckBox1.getText().toString(), checked);
                 break;
             case R.id.checkBox2:
-                if (checked){
-                    str = "Business";
-                    myarray.add(str);
-                }
-                else {
-                    //str = "2 deselected";
-                    myarray.remove("Business");
-                }                break;
+                fillTheArray(myarray, mCheckBox2.getText().toString(), checked);
+                break;
             case R.id.checkBox3:
-                if (checked){
-                    str = "Entrepreneures";
-                    myarray.add(str);
-                }
-                else {
-                    str = "3 deselected";
-                    myarray.remove("Entrepreneures");
-                }                break;
+                fillTheArray(myarray, mCheckBox3.getText().toString(), checked);
+                break;
             case R.id.checkBox4:
-                if (checked){
-                    str = "Politics";
-                    myarray.add(str);
-                }
-                else {
-                    str = "4 deselected";
-                    myarray.remove("Politics");
-                }                break;
+                fillTheArray(myarray, mCheckBox4.getText().toString(), checked);
+                break;
             case R.id.checkBox5:
-                if (checked){
-                    str = "Sports";
-                    myarray.add(str);
-                }
-                else {
-                    str = "5 deselected";
-                    myarray.remove("Sports");
-                }                break;
+                fillTheArray(myarray, mCheckBox5.getText().toString(), checked);
+                break;
             case R.id.checkBox6:
-                if (checked){
-                    str = "Travel";
-                    myarray.add(str);
-                }
-                else {
-                    str = "6 deselected";
-                    myarray.remove("Travel");
-                }                break;
+                fillTheArray(myarray, mCheckBox6.getText().toString(), checked);
+                break;
         }
 
         tttttt = TextUtils.join(" ", myarray);
@@ -332,6 +415,12 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         Toast.makeText(getApplicationContext(), tttttt, Toast.LENGTH_SHORT).show();
+    }
+
+    public void fillTheArray(List<String> array, String element, Boolean condition){
+        if (condition == true){
+            array.add(element);
+        } else array.remove(element);
     }
 
     private void goToResultActivity(){
@@ -362,6 +451,22 @@ public class SearchActivity extends AppCompatActivity {
                 return true;
             } else return false;
     }
+
+    private void startAlarm(AlarmManager alarmManager, PendingIntent pendingIntent){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 11);
+        calendar.set(Calendar.MINUTE, 45);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 900000, pendingIntent);
+
+    }
+    private void cancelAlarm(AlarmManager alarmManager, PendingIntent pendingIntent){
+        alarmManager.cancel(pendingIntent);
+        Toast.makeText(getApplicationContext(), "Alarm Cancelled", Toast.LENGTH_LONG).show();
+    }
+
+
 }
 
 

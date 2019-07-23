@@ -1,11 +1,13 @@
 package com.example.trnews.Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -17,6 +19,7 @@ import com.example.trnews.Utils.RetrofitInstance;
 import com.example.trnews.Views.ArticlesMosPopularAdapter;
 import com.example.trnews.Views.ResultatsAdapter;
 
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +70,15 @@ public class ResultActivity extends AppCompatActivity {
                 "date de fin - "+dateEnd+"\n"+
                 "catégories - "+categories);
 
+        mImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mIntent = new Intent(ResultActivity.this, MainActivity.class);
+                startActivity(mIntent);
+                finish();
+            }
+        });
+
         this.HttpRequest();
     }
 
@@ -79,16 +91,20 @@ public class ResultActivity extends AppCompatActivity {
 
     private void HttpRequest(){
         NYTimesDataService nyTimesDataService = RetrofitInstance.getRetrofitInstance().create(NYTimesDataService.class);
-        //String toto = this.mCategories;
-        Call<ArticlesResultsResearch> call = nyTimesDataService.getResearchArticles(mCategories, mDateBegin, mDateEnd, API_KEY);
+        Call<ArticlesResultsResearch> call;
+
+        if (mDateBegin.equals(mDateEnd)) {
+            call = nyTimesDataService.getResearchArticlesNoDate(mCategories, API_KEY);
+        }
+        else {
+            call = nyTimesDataService.getResearchArticles(mCategories, mDateBegin, mDateEnd, API_KEY);
+        }
 
         call.enqueue(new Callback<ArticlesResultsResearch>() {
             @Override
             public void onResponse(Call<ArticlesResultsResearch> call, retrofit2.Response<ArticlesResultsResearch> response) {
-                //StringBuilder stringBuilder = new StringBuilder();
                 List<Doc> articlesResearchList;
                 articlesResearchList = response.body().getResponse().getDocs();
-
 
                 mResponseList = new ArrayList<Doc>();
 

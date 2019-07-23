@@ -30,8 +30,19 @@ public interface NYTimesDataService {
             @Query("end_date") String dateEnd,
             @Query("api-key") String key);
 
+    @GET("search/v2/articlesearch.json")
+    Call<ArticlesResultsResearch> getResearchArticlesNoDate(
+            @Query("fq") String filteredQuery,
+            @Query("api-key") String key);
+
     @GET("topstories/v2/sports.json")
     Call<ArticlesSports> getSportsArticles(@Query("api-key") String key);
+
+    @GET("search/v2/articlesearch.json")
+    Call<ArticlesResultsResearch> getFirstOfTheRequest(
+            @Query("fq") String filteredQuery,
+            @Query("api-key") String key);
+
 
 
 

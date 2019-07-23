@@ -48,7 +48,7 @@ public class ArticlesSportsViewHolder extends RecyclerView.ViewHolder {
                 goToWebsite(articlesSports.getUrl());
             }
         });
-        this.mTextViewDate.setText(articlesSports.getPublishedDate());
+        this.mTextViewDate.setText(articlesSports.getPublishedDate().substring(0,10));
         this.mTextViewTitle.setText(articlesSports.getTitle().toUpperCase());
         this.mTextViewContentArticle.setText(articlesSports.getSection());
         if (articlesSports.getMultimedia() != null){
