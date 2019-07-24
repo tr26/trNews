@@ -19,6 +19,8 @@ import com.example.trnews.Utils.NYTimesDataService;
 import com.example.trnews.Utils.RetrofitInstance;
 
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -36,10 +38,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Intent i = new Intent(context.getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context.getApplicationContext(), 1, i, 0);
-
-
-
-
 
         NYTimesDataService nyTimesDataService = RetrofitInstance.getRetrofitInstance().create(NYTimesDataService.class);
         Call<ArticlesResultsResearch> call = nyTimesDataService.getFirstOfTheRequest(toto, "QAevoCdrGFGgi7mRDu8GBOME5RLn3veP");
@@ -70,6 +68,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
 
+
             }
 
             @Override
@@ -78,9 +77,12 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
         });
 
+        Date date = new Date();
+        long moment = date.getTime();
+
         if (nbNewMessages[0] != 99){
             Notification notification = new Notification.Builder(context.getApplicationContext())
-                    .setContentTitle("TR NEWS")
+                    .setContentTitle("TR NEWS"+moment)
                     .setContentText("Vous avez "+nbNewMessages[0]+" nouveaux articles non lues")
                     .setSmallIcon(R.drawable.ic_account_box_white_24dp)
                     .setContentIntent(pendingIntent)

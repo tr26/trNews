@@ -125,6 +125,9 @@ public class SearchActivity extends AppCompatActivity {
         mEditTextSearch.setText("", TextView.BufferType.EDITABLE);
         mEditTextDateOne.setText("", TextView.BufferType.EDITABLE);
         mEditTextDateTwo.setText("", TextView.BufferType.EDITABLE);
+        sharedPreferences  = getSharedPreferences(CATEGORIES_CHECKED, 0);
+        myarray = new ArrayList<>();
+
 
 
         mImageButton.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +139,8 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        memoriseNotifButton();
+
 
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,9 +148,7 @@ public class SearchActivity extends AppCompatActivity {
                 if (!checkTheDifferentFields()){
                         Toast.makeText(view.getContext(), "ttt", Toast.LENGTH_SHORT);
                 } else {
-
                     String text = mEditTextSearch.getText().toString();
-
                     if (dateBegin != "" || dateEnd != ""){
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
                         try {
@@ -176,8 +179,6 @@ public class SearchActivity extends AppCompatActivity {
 
                         mContext.startActivity(intent);
                     }
-
-
                 }
             }
         });
@@ -191,12 +192,11 @@ public class SearchActivity extends AppCompatActivity {
                 int month = calendar.get(Calendar.MONTH);
                 int year = calendar.get(Calendar.YEAR);
 
+
                 DatePickerDialog datePickerDialog = new DatePickerDialog(SearchActivity.this, R.style.SwitchCompatTheme, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-
                         month +=1;
-
                         if (month < 10 && day>10){
                             mEditTextDateOne.setText(year + "/" + 0+month + "/" + day);
                         } else if (month >10 && day<10){
@@ -209,7 +209,6 @@ public class SearchActivity extends AppCompatActivity {
                         dateBegin =  mEditTextDateOne.getText().toString().replace("/", "");
                     }
                 }, day, month, year);
-                //datePickerDialog.setBac
                 datePickerDialog.show();
             }
         });
@@ -226,9 +225,7 @@ public class SearchActivity extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(SearchActivity.this, R.style.SwitchCompatTheme, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-
                         month +=1;
-
                         if (month < 10 && day>10){
                             mEditTextDateTwo.setText(year + "/" + 0+month + "/" + day);
                         } else if (month >10 && day<10){
@@ -254,34 +251,33 @@ public class SearchActivity extends AppCompatActivity {
                 Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
                 PendingIntent pendingIntent2 = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, 0);
 
-                if (b){
-                    //Récuperer les donnés pour requetes
-                    //démarrer Notification via AlarmManager
+                // only if cases are checked
+                if (myarray.isEmpty()){
+                    mSwitchBtn.setChecked(false);
+                    Toast.makeText(getApplicationContext(), "veuillez cocher une case", Toast.LENGTH_SHORT).show();
 
-                    sharedPreferences  = getSharedPreferences(CATEGORIES_CHECKED, 0);
-                    sharedPreferences.edit().putString(CATEGORIES_CHECKED, tttttt).apply();
-
-                    //startAlarm(alarmManager, pendingIntent2);
-
-
-
-                    Toast.makeText(getApplicationContext(), "azertyuio", Toast.LENGTH_SHORT).show();
-
-
-
-                    //startAlarm(alarmManager, pendingIntent2);
-
-                    mTextViewTitle.setVisibility(View.INVISIBLE);
-
-                } else {
-                    //Supprimer Les notifications
-                    //sharedPreferences = getSharedPreferences(CATEGORIES_CHECKED, 0);
-                    if (sharedPreferences.contains(CATEGORIES_CHECKED)){
-                        sharedPreferences.edit().clear().apply();
-                    }
-                    mTextViewTitle.setVisibility(View.VISIBLE);
-                    cancelAlarm(alarmManager, pendingIntent2);
                 }
+                else {
+                    if (b){
+                        //Récuperer les donnés pour requetes
+                        //démarrer Notification via AlarmManager
+
+                        //sharedPreferences  = getSharedPreferences(CATEGORIES_CHECKED, 0);
+                        sharedPreferences.edit().putString(CATEGORIES_CHECKED, tttttt).apply();
+
+                        mTextViewTitle.setVisibility(View.INVISIBLE);
+
+                    } else {
+                        //Supprimer Les notifications
+                        //sharedPreferences = getSharedPreferences(CATEGORIES_CHECKED, 0);
+                        if (sharedPreferences.contains(CATEGORIES_CHECKED)){
+                            sharedPreferences.edit().clear().apply();
+                        }
+                        mTextViewTitle.setVisibility(View.VISIBLE);
+                        cancelAlarm(alarmManager, pendingIntent2);
+                    }
+                }
+
 
                 //sharedPreferences.getAll();
             }
@@ -335,7 +331,12 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-
+    //méomoriser le boutons notif
+    private void memoriseNotifButton(){
+        if(sharedPreferences.contains(CATEGORIES_CHECKED)){
+            mSwitchBtn.setChecked(true);
+        } else  mSwitchBtn.setChecked(false);
+    }
 
     private void adjustView(){
         Intent intent = getIntent();
@@ -451,14 +452,13 @@ public class SearchActivity extends AppCompatActivity {
                 return true;
             } else return false;
     }
-
     private void startAlarm(AlarmManager alarmManager, PendingIntent pendingIntent){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 11);
-        calendar.set(Calendar.MINUTE, 45);
+        calendar.set(Calendar.MINUTE, 26);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 900000, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 90000, pendingIntent);
 
     }
     private void cancelAlarm(AlarmManager alarmManager, PendingIntent pendingIntent){
