@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#103C70</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#ADCEFF</color>
 
     <array name="colorPagesViewPager">
         <item>#ADCEFF</item>

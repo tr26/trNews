@@ -97,6 +97,12 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<String> myarray;
     private String tttttt;
 
+    int yearC;
+    int monthC;
+    int dayC;
+    Calendar mCalendar;
+
+
     String dateBegin;
     String dateEnd;
 
@@ -187,29 +193,31 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Calendar calendar = Calendar.getInstance();
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int month = calendar.get(Calendar.MONTH);
-                int year = calendar.get(Calendar.YEAR);
+                mCalendar = Calendar.getInstance();
+                dayC = mCalendar.get(Calendar.DAY_OF_MONTH);
+                monthC = mCalendar.get(Calendar.MONTH);
+                yearC = mCalendar.get(Calendar.YEAR);
 
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(SearchActivity.this, R.style.SwitchCompatTheme, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                        month +=1;
-                        if (month < 10 && day>10){
-                            mEditTextDateOne.setText(year + "/" + 0+month + "/" + day);
-                        } else if (month >10 && day<10){
-                            mEditTextDateOne.setText(year + "/" + month + "/" +0+day);
-                        } else if (month<10 && day<10){
-                            mEditTextDateOne.setText(year + "/" + 0+month + "/" + 0+day);
-                        } else {
-                            mEditTextDateOne.setText(year + "/" + month + "/" + day);
-                        }
-                        dateBegin =  mEditTextDateOne.getText().toString().replace("/", "");
-                    }
-                }, day, month, year);
-                datePickerDialog.show();
+                mDatePickerDialog = new DatePickerDialog(SearchActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                    month +=1;
+                                    if (month < 10 && day>10){
+                                        mEditTextDateOne.setText(year + "/" + 0+month + "/" + day);
+                                    } else if (month >10 && day<10){
+                                        mEditTextDateOne.setText(year + "/" + month + "/" +0+day);
+                                    } else if (month<10 && day<10){
+                                        mEditTextDateOne.setText(year + "/" + 0+month + "/" + 0+day);
+                                    } else {
+                                        mEditTextDateOne.setText(year + "/" + month + "/" + day);
+                                    }
+                                    dateBegin =  mEditTextDateOne.getText().toString().replace("/", "");
+                                }
+                }, yearC, monthC, dayC);
+                //datePickerDialog.
+                mDatePickerDialog.show();
             }
         });
 
@@ -222,7 +230,7 @@ public class SearchActivity extends AppCompatActivity {
                 int month = calendar.get(Calendar.MONTH);
                 int year = calendar.get(Calendar.YEAR);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(SearchActivity.this, R.style.SwitchCompatTheme, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(SearchActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                         month +=1;
@@ -237,7 +245,7 @@ public class SearchActivity extends AppCompatActivity {
                         }
                         dateEnd =  mEditTextDateTwo.getText().toString().replace("/", "");
                     }
-                }, day, month, year);
+                }, year, month, day);
                 datePickerDialog.show();
             }
         });
@@ -259,17 +267,11 @@ public class SearchActivity extends AppCompatActivity {
                 }
                 else {
                     if (b){
-                        //Récuperer les donnés pour requetes
-                        //démarrer Notification via AlarmManager
-
-                        //sharedPreferences  = getSharedPreferences(CATEGORIES_CHECKED, 0);
+                        //Récuperer les donnés pour requetes -- démarrer Notification via AlarmManager
                         sharedPreferences.edit().putString(CATEGORIES_CHECKED, tttttt).apply();
-
                         mTextViewTitle.setVisibility(View.INVISIBLE);
-
                     } else {
                         //Supprimer Les notifications
-                        //sharedPreferences = getSharedPreferences(CATEGORIES_CHECKED, 0);
                         if (sharedPreferences.contains(CATEGORIES_CHECKED)){
                             sharedPreferences.edit().clear().apply();
                         }
@@ -277,9 +279,6 @@ public class SearchActivity extends AppCompatActivity {
                         cancelAlarm(alarmManager, pendingIntent2);
                     }
                 }
-
-
-                //sharedPreferences.getAll();
             }
         });
         adjustView();
