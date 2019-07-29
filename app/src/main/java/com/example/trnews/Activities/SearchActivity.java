@@ -44,6 +44,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -110,6 +111,8 @@ public class SearchActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
     private static final String CATEGORIES_CHECKED = "CATEGORIES_CHECKED";
+    private static final String KEY_WORD = "KEY_WORD";
+    String keyWord;
 
 
 
@@ -124,6 +127,7 @@ public class SearchActivity extends AppCompatActivity {
         mSearchBtn.setEnabled(false);
         mSearchBtn.setBackgroundColor(Color.parseColor("#326F88"));
         this.tttttt = "";
+        this.keyWord = "";
 
         this.dateBegin = "";
         this.dateEnd = "";
@@ -132,7 +136,7 @@ public class SearchActivity extends AppCompatActivity {
         mEditTextDateOne.setText("", TextView.BufferType.EDITABLE);
         mEditTextDateTwo.setText("", TextView.BufferType.EDITABLE);
         sharedPreferences  = getSharedPreferences(CATEGORIES_CHECKED, 0);
-        myarray = new ArrayList<>();
+        if (myarray == null) myarray = new ArrayList<>();
 
 
 
@@ -289,11 +293,16 @@ public class SearchActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         final String[] firstId = new String[1];
-        if (mSwitchBtn.isChecked()){
+
+        //System.out.println(mTextViewTitle.getText().toString());
+        if (mSwitchBtn.isChecked() && mTextViewTitle.getText().toString().equals("Notifications")){
+
+            keyWord = mEditTextSearch.getText().toString();
             sharedPreferences.edit().putString(CATEGORIES_CHECKED, tttttt).apply();
+            sharedPreferences.edit().putString(KEY_WORD, keyWord).apply();
 
             NYTimesDataService nyTimesDataService = RetrofitInstance.getRetrofitInstance().create(NYTimesDataService.class);
-            Call<ArticlesResultsResearch> call = nyTimesDataService.getFirstOfTheRequest(tttttt, API_KEY);
+            Call<ArticlesResultsResearch> call = nyTimesDataService.getNotificationSearch(tttttt, keyWord,API_KEY);
 
             call.enqueue(new Callback<ArticlesResultsResearch>() {
                 @Override
@@ -305,9 +314,10 @@ public class SearchActivity extends AppCompatActivity {
 
                     //mResponseList = new ArrayList<Doc>();
                     firstId[0] = articlesResearchList.get(0).getId();
+                    System.out.println("first id");
+                    System.out.println(firstId[0]);
 
                     sharedPreferences.edit().putString("firstId", firstId[0]).apply();
-                    //NYTimesDataService.getFirstOfTheRequest(tttttt, API_KEY);
                     sharedPreferences.getAll();
 
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -323,9 +333,14 @@ public class SearchActivity extends AppCompatActivity {
 
                 }
             });
+        }
+        else {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
+            Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+            PendingIntent pendingIntent2 = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, 0);
 
-
+            cancelAlarm(alarmManager, pendingIntent2);
         }
 
     }
@@ -333,7 +348,40 @@ public class SearchActivity extends AppCompatActivity {
     //méomoriser le boutons notif
     private void memoriseNotifButton(){
         if(sharedPreferences.contains(CATEGORIES_CHECKED)){
-            mSwitchBtn.setChecked(true);
+            if (sharedPreferences.getString(CATEGORIES_CHECKED, null).equals("")){
+                mSwitchBtn.setChecked(false);
+            } else{
+                mSwitchBtn.setChecked(true);
+                String listeCategories = sharedPreferences.getString(CATEGORIES_CHECKED, null);
+                ArrayList<String> tabCategories = new ArrayList<String>(Arrays.asList(listeCategories.split(" ")));
+                for (String categorie : tabCategories){
+                    switch (categorie){
+                        case ("Arts"):
+                            mCheckBox1.setChecked(true);
+                            break;
+                        case ("Business"):
+                            mCheckBox2.setChecked(true);
+                            break;
+                        case ("Entrepreneurs"):
+                            mCheckBox3.setChecked(true);
+                            break;
+                        case ("Politics"):
+                            mCheckBox4.setChecked(true);
+                            break;
+                        case ("Sports"):
+                            mCheckBox5.setChecked(true);
+                            break;
+                        case ("Travel"):
+                            mCheckBox6.setChecked(true);
+                            break;
+                            default:
+                    }
+                }
+            }
+
+            //System.out.println("toto");
+            //String tchouftchouf = sharedPreferences.getString(CATEGORIES_CHECKED, null);
+            //System.out.println(tchouftchouf);
         } else  mSwitchBtn.setChecked(false);
     }
 
@@ -358,6 +406,7 @@ public class SearchActivity extends AppCompatActivity {
                 mEditTextDateOne.setVisibility(View.INVISIBLE);
                 mTextViewDateOne.setVisibility(View.INVISIBLE);
                 mTextViewDateTwo.setVisibility(View.INVISIBLE);
+
                 break;
 
                 default:
@@ -399,6 +448,8 @@ public class SearchActivity extends AppCompatActivity {
             case R.id.checkBox6:
                 fillTheArray(myarray, mCheckBox6.getText().toString(), checked);
                 break;
+                default:
+
         }
 
         tttttt = TextUtils.join(" ", myarray);
@@ -454,16 +505,17 @@ public class SearchActivity extends AppCompatActivity {
     private void startAlarm(AlarmManager alarmManager, PendingIntent pendingIntent){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 11);
-        calendar.set(Calendar.MINUTE, 26);
+        calendar.set(Calendar.HOUR_OF_DAY, 13);
+        calendar.set(Calendar.MINUTE, 12);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 90000, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 86400000, pendingIntent);
 
     }
     private void cancelAlarm(AlarmManager alarmManager, PendingIntent pendingIntent){
         alarmManager.cancel(pendingIntent);
         Toast.makeText(getApplicationContext(), "Alarm Cancelled", Toast.LENGTH_LONG).show();
     }
+
 
 
 }

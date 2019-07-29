@@ -39,9 +39,12 @@ public interface NYTimesDataService {
     Call<ArticlesSports> getSportsArticles(@Query("api-key") String key);
 
     @GET("search/v2/articlesearch.json")
-    Call<ArticlesResultsResearch> getFirstOfTheRequest(
+    Call<ArticlesResultsResearch> getNotificationSearch(
             @Query("fq") String filteredQuery,
+            @Query("field-name") String keyword,
             @Query("api-key") String key);
+
+
 
 
 
@@ -52,4 +55,5 @@ public interface NYTimesDataService {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build();
 }
+
 
